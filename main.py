@@ -69,7 +69,7 @@ while True:
     logger.warning("continue button is dissable")
     count += 1
     centre.send_keys(options['reset_category'])
-    sleep(10 + random())
+    sleep(300 + random())
 
 
 continue_btn.click()
