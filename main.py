@@ -6,8 +6,8 @@ from loguru import logger
 
 
 options = {
-    "login": "bkozlovsky@bk.ru",
-    "password": "gd0d469SS@",
+    "login": "*************",
+    "password": "***************",
     "center": "Poland Visa Application Center-Minsk",
     "category": "D-visa",
     "sub_category": "National D-visa",
