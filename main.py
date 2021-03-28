@@ -7,8 +7,8 @@ from loguru import logger
 
 
 options = {
-    "login": "***************",
-    "password": "************",
+    "login": "*************",
+    "password": "**********",
     "center": "Poland Visa Application Center-Minsk",
     "category": "D-visa",
     "sub_category": "National D-visa",
@@ -18,13 +18,13 @@ options = {
             "name": "Bahdan",
             "last_name": "Kazlouski",
             "gender": "Male",
-            "date_born": "24011997",
+            "date_born": "***********",
             "nationality": "BELARUS",
-            "passport_number": "MP3936138",
-            "expare_date": "10022027",
+            "passport_number": "*********",
+            "expare_date": "*************",
             "code_phone": "44",
-            "phone_number": "80447164239",
-            "email": "bkozlovsky@bk.ru"
+            "phone_number": "************",
+            "email": "*******************"
         }
     ]    
 }
@@ -74,7 +74,7 @@ sub_category = driver.find_element_by_xpath(
     "/form/div[3]/mat-form-field/div/div[1]/div[3]/mat-select"
 )
 
-count = 0
+count = 1
 while True:
     logger.warning(f"try to booking {count=}")
     sleep(randint(3, 5) + random())
@@ -88,7 +88,8 @@ while True:
 
     sleep(random())
     continue_btn = driver.find_element_by_xpath(
-        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[2]/button")
+        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[2]/button"
+    )
     if continue_btn.is_enabled():
         logger.warning("continue button is enable")
         break

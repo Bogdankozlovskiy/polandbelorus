@@ -1,4 +1,8 @@
-def add_applicate(data):
+from time import sleep
+from random import random
+
+
+def add_applicate(driver, data):
     sleep(3 + random())
     tmp = driver.find_element_by_xpath(
         "/html/body/app-root/div/app-applicant-details/section/"
@@ -39,8 +43,10 @@ def add_applicate(data):
         "/html/body/app-root/div/app-applicant-details/section/mat-card[1]/"
         "form/app-dynamic-form/div/div/app-dynamic-control[6]/div/div[1]/div/"
         "app-input-control/div/mat-form-field/div/div[1]/div[3]/input"
-    ).send_keys(data['passport_number'])
-    sleep(random())
+    )
+    for letter in data['passport_number']:
+        tmp.send_keys(letter)
+        sleep(random())
     tmp = driver.find_element_by_xpath(
         "/html/body/app-root/div/app-applicant-details/section/mat-card[1]/"
         "form/app-dynamic-form/div/div/app-dynamic-control[6]/div/div[2]/div/app-ngb-datepicker/div/div[2]/input"
