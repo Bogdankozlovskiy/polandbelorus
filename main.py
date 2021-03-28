@@ -1,4 +1,5 @@
 from selenium.webdriver import Firefox
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 from random import randint, random
 from utils import add_applicate
@@ -44,7 +45,9 @@ user_name = driver.find_element_by_xpath(
 password = driver.find_element_by_xpath(
     "/html/body/app-root/div/app-login/section/div/div/mat-card/form/div[2]/mat-form-field/div/div[1]/div[3]/input"
 )
-submit = driver.find_element_by_xpath("/html/body/app-root/div/app-login/section/div/div/mat-card/form/button")
+submit = driver.find_element_by_xpath(
+    "/html/body/app-root/div/app-login/section/div/div/mat-card/form/button"
+)
 
 sleep(randint(3, 5) + random())
 for letter in options['login']:
@@ -58,7 +61,9 @@ submit.click()
 logger.info("click login button")
 
 sleep(randint(3, 5) + random())
-driver.find_element_by_xpath("/html/body/app-root/div/app-dashboard/section/div/div[2]/button/span").click()
+driver.find_element_by_xpath(
+    "/html/body/app-root/div/app-dashboard/section/div/div[2]/button/span"
+).click()
 logger.info("open modal window for booking")
 
 centre = driver.find_element_by_xpath(
@@ -95,8 +100,16 @@ while True:
         break
     logger.warning("continue button is dissable")
     centre.send_keys(options['reset_category'])
-    sleep(240 + randint(0, 30) + random())
+    sleep(100 + randint(0, 15) + random())
     count += 1
+    try:
+        driver.find_element_by_css_selector(
+            "div.col-12:nth-child(2) > button:nth-child(1)"
+        ).click()
+    except NoSuchElementException:
+        pass
+    else:
+        logger.warning("close disconnect button")
 
 logger.warning("we have the slot")
 continue_btn.click()
