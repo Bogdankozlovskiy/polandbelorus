@@ -96,6 +96,7 @@ while True:
     logger.warning("continue button is dissable")
     centre.send_keys(options['reset_category'])
     sleep(240 + randint(0, 30) + random())
+    count += 1
 
 logger.warning("we have the slot")
 continue_btn.click()
