@@ -1,5 +1,60 @@
 from time import sleep
-from random import random
+from random import random, randint
+from selenium.webdriver import Firefox
+
+
+def init_driver(logger, options):
+    driver = Firefox()
+    driver.get("https://visa.vfsglobal.com/blr/en/pol/login")
+    logger.info("open site")
+
+    sleep(randint(5, 8) + random())
+    driver.find_element_by_css_selector("#onetrust-accept-btn-handler").click()
+    logger.info("skip cookie message")
+
+    user_name = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-login/section/div/div/mat-card/form/div[1]/mat-form-field/div/div[1]/div[3]/input"
+    )
+    password = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-login/section/div/div/mat-card/form/div[2]/mat-form-field/div/div[1]/div[3]/input"
+    )
+    submit = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-login/section/div/div/mat-card/form/button"
+    )
+
+    sleep(randint(3, 5) + random())
+    for letter in options['login']:
+        user_name.send_keys(letter)
+        sleep(random())
+    for letter in options['password']:
+        password.send_keys(letter)
+        sleep(random())
+    logger.info("set login and password")
+    submit.click()
+    logger.info("click login button")
+
+    sleep(randint(3, 5) + random())
+    driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-dashboard/section/div/div[2]/button/span"
+    ).click()
+    logger.info("open modal window for booking")
+    return driver
+
+
+def get_centre_category_sub_category(driver):
+    centre = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-eligibility-criteria/section/form/"
+        "mat-card[1]/form/div[1]/mat-form-field/div/div[1]/div[3]/mat-select"
+    )
+    category = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[1]"
+        "/form/div[2]/mat-form-field/div/div[1]/div[3]/mat-select"
+    )
+    sub_category = driver.find_element_by_xpath(
+        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[1]"
+        "/form/div[3]/mat-form-field/div/div[1]/div[3]/mat-select"
+    )
+    return centre, category, sub_category
 
 
 def add_applicate(driver, data):

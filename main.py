@@ -2,7 +2,7 @@ from selenium.webdriver import Firefox
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 from random import randint, random
-from utils import add_applicate
+from utils import add_applicate, init_driver, get_centre_category_sub_category
 from winsound import Beep
 from loguru import logger
 
@@ -31,85 +31,48 @@ options = {
 }
 
 
-driver = Firefox()
-driver.get("https://visa.vfsglobal.com/blr/en/pol/login")
-logger.info("open site")
-
-sleep(randint(5, 8) + random())
-driver.find_element_by_css_selector("#onetrust-accept-btn-handler").click()
-logger.info("skip cookie message")
-
-user_name = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-login/section/div/div/mat-card/form/div[1]/mat-form-field/div/div[1]/div[3]/input"
-)
-password = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-login/section/div/div/mat-card/form/div[2]/mat-form-field/div/div[1]/div[3]/input"
-)
-submit = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-login/section/div/div/mat-card/form/button"
-)
-
-sleep(randint(3, 5) + random())
-for letter in options['login']:
-    user_name.send_keys(letter)
-    sleep(random())
-for letter in options['password']:
-    password.send_keys(letter)
-    sleep(random())
-logger.info("set login and password")
-submit.click()
-logger.info("click login button")
-
-sleep(randint(3, 5) + random())
-driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-dashboard/section/div/div[2]/button/span"
-).click()
-logger.info("open modal window for booking")
-
-centre = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-eligibility-criteria/section/form/"
-    "mat-card[1]/form/div[1]/mat-form-field/div/div[1]/div[3]/mat-select"
-)
-category = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[1]"
-    "/form/div[2]/mat-form-field/div/div[1]/div[3]/mat-select"
-)
-sub_category = driver.find_element_by_xpath(
-    "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[1]"
-    "/form/div[3]/mat-form-field/div/div[1]/div[3]/mat-select"
-)
-
+driver = init_driver(logger, options)
+centre, category, sub_category = get_centre_category_sub_category(driver)
 count = 1
 while True:
-    logger.warning(f"try to booking {count=}")
-    sleep(randint(3, 5) + random())
-    centre.send_keys(options['center'])
+	try:
+	    logger.warning(f"try to booking {count=}")
+	    sleep(randint(3, 5) + random())
+	    centre.send_keys(options['center'])
 
-    sleep(randint(3, 5) + random())
-    category.send_keys(options['category'])
+	    sleep(randint(3, 5) + random())
+	    category.send_keys(options['category'])
 
-    sleep(randint(3, 5) + random())
-    sub_category.send_keys(options['sub_category'])
+	    sleep(randint(5, 8) + random())
+	    sub_category.send_keys(options['sub_category'])
 
-    sleep(random())
-    continue_btn = driver.find_element_by_xpath(
-        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[2]/button"
-    )
-    if continue_btn.is_enabled():
-        logger.warning("continue button is enable")
-        break
-    logger.warning("continue button is dissable")
-    centre.send_keys(options['reset_category'])
-    sleep(100 + randint(0, 15) + random())
-    count += 1
-    try:
-        driver.find_element_by_css_selector(
-            "div.col-12:nth-child(2) > button:nth-child(1)"
-        ).click()
-    except NoSuchElementException:
-        pass
-    else:
-        logger.warning("close disconnect button")
+	    sleep(random())
+	    continue_btn = driver.find_element_by_xpath(
+	        "/html/body/app-root/div/app-eligibility-criteria/section/form/mat-card[2]/button"
+	    )
+	    if continue_btn.is_enabled():
+	        logger.warning("continue button is enable")
+	        break
+
+	    logger.warning("continue button is dissable")
+	    centre.send_keys(options['reset_category'])
+	    sleep(100 + randint(0, 15) + random())
+	    count += 1
+	    try:
+	        driver.find_element_by_css_selector(
+	            "div.col-12:nth-child(2) > button:nth-child(1)"
+	        ).click()
+	    except NoSuchElementException:
+	        pass
+	    else:
+	        logger.warning("close disconnect button")
+	except Exception as e:
+		driver.close()
+		logger.critical(e.__str__())
+		sleep(300 + randint(0, 20) + random())
+		logger.critical("reinit driver")
+		driver = init_driver(logger, options)
+		centre, category, sub_category = get_centre_category_sub_category(driver)
 
 logger.warning("we have the slot")
 continue_btn.click()
